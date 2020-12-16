@@ -20,6 +20,7 @@ export class Application {
     private io:socketIO.Server;
     private httpServer:http.Server;
     private passport:PassportStatic;
+    public appName:string;
 
     constructor(){
         this.app = express();
@@ -27,6 +28,7 @@ export class Application {
         this.httpServer = http.createServer(this.app);
         this.io = socketIO(this.httpServer);
         this.db_name = config.MONGODB_URI;
+        this.appName = config.appName;
         this.passport = passport;
         this.init();
     }
@@ -67,7 +69,7 @@ export class Application {
 
     private routes(io:SocketIO.Server):void{
         this.app.get('/',(req:Request,res:Response)=>{
-            res.send("This is SafeGarden Api :)");
+            res.send(`This is ${this.appName} Api :)`);
         })
         configRoutes(this.app,io);
 

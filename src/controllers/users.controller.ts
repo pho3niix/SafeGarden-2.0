@@ -34,7 +34,7 @@ export function userController(app:Express,io:SocketIO.Server){
                 pin:gpc(6)
             })
             .then((item:IUsers)=>{
-                sendEmail(item.email,"Verificacion de cuenta","Su codigo de verificacion es: "+item.pin);
+                sendEmail(config.nodemailer.user,item.email,"Verificacion de cuenta","Su codigo de verificacion es: "+item.pin);
                 res.status(200).json({
                     status:true,
                     message:'Usuario registrado con exito'

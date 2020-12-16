@@ -35,9 +35,9 @@ export function uploadImage(file:any,model:mongoose.Model<any>,path:string,image
     })
 }
 
-export function sendEmail(email:string,subject:string,message:string):void{
+export function sendEmail(from:string,email:string,subject:string,message:string):void{
     const mailOptions = {
-        from:'',
+        from:from,
         to:email,
         subject:subject,
         text:message
