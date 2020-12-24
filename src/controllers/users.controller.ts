@@ -1,11 +1,11 @@
-import {IUsers} from '../models/users';
+import {IUsers} from '../models/sesion.users';
 import {User} from '../models/index';
 import jwt from 'jsonwebtoken';
-import config from '../config';
+import config from '../config/config';
 import {Express,Request,Response,NextFunction} from 'express';
 import bcrypt from 'bcrypt';
 const gpc = require('generate-pincode');
-import {sendEmail} from '../global.functions';
+import {sendEmail} from '../services';
 import passport from 'passport';
 
 function createToken(payload:IUsers,expires:number):string{
@@ -18,8 +18,8 @@ function createToken(payload:IUsers,expires:number):string{
     },config.secret,options);
 }
 
-export function userController(app:Express,io:SocketIO.Server){
-    app.post('/user/register',async(req:Request,res:Response)=>{
+export function userController(base_url:string,app:Express,io:SocketIO.Server){
+    app.post(`${base_url}/register`,async(req:Request,res:Response)=>{
         const obj = req.body;
         try {
             const user:IUsers = await User.findOne({email:obj.email});
@@ -40,24 +40,29 @@ export function userController(app:Express,io:SocketIO.Server){
                     message:'Usuario registrado con exito'
                 })
             })
-            .catch(err=>console.log(err));
+            .catch((err:Error)=>{
+                console.log(err)
+                res.status(503).json({
+                    status:false,
+                    message:"Error al crear usuario"
+                })
+            });
         } catch (error) {
-            console.log(error)
+            console.log(error);
+            res.send(error);
         }
     })
 
-    app.post('/user/login',async(req:Request,res:Response,next:NextFunction)=>{
-        passport.authenticate('local-login',{session:false},(err,user)=>{
+    app.post(`${base_url}/login`,async(req:Request,res:Response,next:NextFunction)=>{
+        passport.authenticate('local-login',{session:false},(err:Error,user:IUsers)=>{
             if(err||!user)res.status(503).json({status:false,message:"Credenciales invalidas."});
-            if(user.verified){
-                const expiresIn:number = 5184000;
-                res.status(200).json({
-                    token:createToken(user,expiresIn),
-                    expires:expiresIn
-                })
-            }else{
-                res.status(401).json({'message': "Favor de verificar la cuenta"});
-            }
+            if(!user.verified)res.status(401).json({status:false,message: "Favor de verificar la cuenta"});
+            
+            const expiresIn:number = 5184000;
+            res.status(200).json({
+                token:createToken(user,expiresIn),
+                expires:expiresIn
+            })
         })(req, res);
     })
 }

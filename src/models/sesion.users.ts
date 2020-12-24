@@ -16,7 +16,7 @@ export interface IUsers extends Document {
 }
 
 export const UserSchema = new Schema({
-    type:{type:Number,required:true,min:1,max:2},
+    type:{type:Number,required:true,min:1,max:2},//1 administrador, 2 empleado
     email:{type:String,required:true,unique:true},
     password:{type:String,required:true},
     pin:{type:Number,required:false},
@@ -31,7 +31,7 @@ export const UserSchema = new Schema({
 })
 
 export interface IUserModel extends Model<IUsers>{};
-export const User = model<IUsers,IUserModel>("Users",UserSchema);
+export const User = model<IUsers,IUserModel>("SesionUsers",UserSchema);
 
 export function login(){
     console.log('login');

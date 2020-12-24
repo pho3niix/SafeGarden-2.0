@@ -1,15 +1,15 @@
 import express,{Request,Response,Express, NextFunction} from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
-import config from './config';
+import config from './config/config';
 import dotenv from 'dotenv';
 import fileupload from 'express-fileupload';
 import path from 'path';
-import {configRoutes} from './routes/index';
+import {configRoutes} from './index.routes';
 import {initDB} from './models/index';
 import http from 'http';
 import socketIO from 'socket.io';
-import {initPassport} from './config.passport';
+import {initPassport} from './config/config.passport';
 import passport, { PassportStatic } from 'passport';
 
 export class Application {
@@ -24,7 +24,7 @@ export class Application {
 
     constructor(){
         this.app = express();
-        this.port = process.env.PORT || 3000;
+        this.port = process.env.PORT || config.port;
         this.httpServer = http.createServer(this.app);
         this.io = socketIO(this.httpServer);
         this.db_name = config.MONGODB_URI;

@@ -1,5 +1,5 @@
-import {Student} from './students';
-import {User} from './users';
+import {Student} from './school.users';
+import {User} from './sesion.users';
 import mongoose from 'mongoose';
 
 export function initDB(name:string):void{

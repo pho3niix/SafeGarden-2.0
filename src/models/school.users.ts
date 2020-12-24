@@ -3,20 +3,19 @@ import {Schema,model,Model,Document} from 'mongoose';
 export interface IStudent extends Document {
     name:string;
     lastName:string;
-    mlastName:string;
     address:IAddress;
     phone:string;
     birthday:Date;
-    home:string;
+    home?:string;
     status:boolean;
     folio:number;
-    tutors:Array<ITutors>;
+    tutors?:Array<ITutors>;
+    type:number;
 };
 
 interface ITutors extends Document{
     name:string;
     lastName:string;
-    mlastName:string;
     phone:{work:string,home:string};
     parent:string;
 }
@@ -30,9 +29,9 @@ interface IAddress extends Document{
 }
 
 const StudentSchema:Schema = new Schema({
+    type:{type:Number,required:false,unique:false},//1 alumno, 2 maestro
     name:{type:String, required:true, unique:false},
     lastName:{type:String, required:true, unique:false},
-    mlastName:{type:String, required:true, unique:false},
     address:{type:Object,required:false,unique:false},
     phone:{type:String,required:false,unique:false},
     birthday:{type:Date,required:false,unique:false},
@@ -42,11 +41,11 @@ const StudentSchema:Schema = new Schema({
     tutors:[{type:Object, required:true, unique:false}],
     skill:{type:String,required:false},
     groups:[{}],
-    dateIn:{type:Date,required:false,default:Date.now()}
+    dateIn:{type:Date,required:false,default:Date.now()},
 })
 
 export interface IStudentModel extends Model<IStudent>{};
-export const Student = model<IStudent,IStudentModel>("Student",StudentSchema);
+export const Student = model<IStudent,IStudentModel>("SchoolUsers",StudentSchema);
 
 export function GetStudents(filter:{}):Promise<Array<IStudent>>{
     return new Promise(async(done,fail)=>{

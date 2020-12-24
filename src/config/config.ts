@@ -6,7 +6,8 @@ const config = {
         user:'safegarden2020@outlook.com',
         pass:'5af3gard3n2020'
     },
-    appName:"SafeGarden2.0"
+    appName:"SafeGarden2.0",
+    port:3000
 }
 
 export default config;

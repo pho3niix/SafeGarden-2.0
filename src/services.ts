@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 import Path from 'path';
 import fs from 'fs-extra';
 import nodemailer from 'nodemailer';
+import jwt from 'jsonwebtoken';
+import config from './config/config';
 
 export function uploadImage(file:any,model:mongoose.Model<any>,path:string,imageName:string,filter:{},update:string):Promise<object>{
     return new Promise((done,fail)=>{
@@ -47,8 +49,8 @@ export function sendEmail(from:string,email:string,subject:string,message:string
         port:587,
         secure:false,
         auth:{
-            user:'safegarden2020@outlook.com',
-            pass:'5af3gard3n2020'
+            user:config.nodemailer.user,
+            pass:config.nodemailer.pass
         },
         requireTLS: true,
         tls: {
@@ -60,4 +62,8 @@ export function sendEmail(from:string,email:string,subject:string,message:string
         console.log("Mensaje mandado con exito",info.messageId,info.response);
     })
     .catch(err=>console.log("Error al manda correo electronico",err));
+}
+
+export function DecodeToken(token:string){
+    return jwt.decode(token);
 }
