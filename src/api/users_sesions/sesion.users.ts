@@ -1,4 +1,5 @@
 import {Document,model,Model,Schema} from 'mongoose';
+import {now} from '../../services/services';
 
 export interface IUsers extends Document {
     type:number;
@@ -23,7 +24,7 @@ export const UserSchema = new Schema({
     active:{type:Boolean,required:false,default:true},
     verified:{type:Boolean,required:false,default:false},
     filename:{type:String, required:false,default:null},
-    dateCreated:{type:Date,required:false,default:Date.now()},
+    dateCreated:{type:Date,required:false,default:now()},
     resetCode:{type:Number,required:false,default:null},
     resetRequest:{type:Boolean,required:false,default:null},
     name:{type:String,required:false},

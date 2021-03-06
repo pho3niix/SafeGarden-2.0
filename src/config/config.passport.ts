@@ -1,11 +1,10 @@
 import passportJwt from 'passport-jwt';
 import passport,{PassportStatic} from 'passport';
 import bcrypt from 'bcrypt';
-import {User} from '../models/index';
-import config from './config';
-import {Request,Response,NextFunction,RequestHandler} from 'express';
+import {User} from '../Api/index.model';
+import {Request,Response,NextFunction} from 'express';
 import passportLocal from 'passport-local';
-import { IUsers } from '../models/sesion.users';
+import { IUsers } from '../Api/users_sesions/sesion.users';
 
 const LocalStrategy = passportLocal.Strategy;
 const JwtStrategy = passportJwt.Strategy;
@@ -42,7 +41,7 @@ export function initPassport(passport:PassportStatic):void{
     //JWT strategy for access to route
     passport.use('jwt',new JwtStrategy({
         jwtFromRequest: passportJwt.ExtractJwt.fromHeader('authorization'),
-        secretOrKey:config.secret
+        secretOrKey:process.env.SECRET_KEY
     },authJwt));
     //Local strategy for login to app
     passport.use('local-login',new LocalStrategy({
@@ -59,7 +58,7 @@ export function checkjwt(req:Request,res:Response,next:NextFunction):void{
     });
     passport.authenticate('jwt',{session:false},(err,user,info)=>{
         if(err)next(err);
-        if(!user)res.status(503).json({status:503,message:'No autorizado.'});
+        if(!user)res.status(401).json({status:401,message:'No autorizado.'});
         next();
     })(req,res,next);
 }

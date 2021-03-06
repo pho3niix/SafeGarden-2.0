@@ -1,12 +1,11 @@
 import express,{Request,Response,Express, NextFunction} from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
-import config from './config/config';
 import dotenv from 'dotenv';
 import fileupload from 'express-fileupload';
 import path from 'path';
-import {configRoutes} from './index.routes';
-import {initDB} from './models/index';
+import {configRoutes} from './Api/index.routes';
+import {initDB} from './Api/index.model';
 import http from 'http';
 import socketIO from 'socket.io';
 import {initPassport} from './config/config.passport';
@@ -23,12 +22,13 @@ export class Application {
     public appName:string;
 
     constructor(){
+        dotenv.config();
         this.app = express();
-        this.port = process.env.PORT || config.port;
+        this.port = process.env.PORT || 3000;
         this.httpServer = http.createServer(this.app);
         this.io = socketIO(this.httpServer);
-        this.db_name = config.MONGODB_URI;
-        this.appName = config.appName;
+        this.db_name = process.env.MONGODB_URI;
+        this.appName = process.env.appName;
         this.passport = passport;
         this.init();
     }
@@ -54,7 +54,6 @@ export class Application {
     }
 
     private middlewares():void{
-        if(process.env.NODE_ENV!=='production')dotenv.config();
         this.app.use(express.json());
         this.app.use(express.urlencoded({extended:true}));
         this.app.use(morgan('dev'));
