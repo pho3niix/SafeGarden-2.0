@@ -30,8 +30,8 @@ export function groupController(url:string,app:Express,io:SocketIO.Server):void{
 
     // obtener todos los grupos registrados
     app.get(`${url}/:key?/:value?`,checkjwt,(req:Request,res:Response)=>{
-        const [key,value] = [req.params.key,req.params.value]
-        Group.find(filter(key,value))
+        const [key,value] = [req.params.key,req.params.value];
+        Group.find({...filter(key,value),...{status:true}})
         .then((data:Array<IGroup>)=>{
             res.status(200).json({
                 status:true,
@@ -50,7 +50,7 @@ export function groupController(url:string,app:Express,io:SocketIO.Server):void{
 
     // editar grupos
     app.put(`${url}/:folio`,checkjwt,(req:Request,res:Response)=>{
-        Group.updateOne({folio:parseInt(req.params.folio)},{
+        Group.updateOne({folio:parseInt(req.params.folio), status: true},{
             name:req.body.name
         })
         .then((data)=>{
@@ -69,16 +69,14 @@ export function groupController(url:string,app:Express,io:SocketIO.Server):void{
         })
     })
 
-    app.delete(`${url}/:folio/:action`,checkjwt,(req:Request,res:Response)=>{
-        const action:boolean = Boolean(req.params.action);
-        Group.updateOne({folio:parseInt(req.params.folio)},{
-            status:action
+    app.delete(`${url}/:folio`,checkjwt,(req:Request,res:Response)=>{
+        Group.updateOne({folio:parseInt(req.params.folio), status: true},{
+            status:false
         })
         .then(data=>{
-            let message = action==false?"eliminado ":"recuperado";
             res.status(200).json({
                 status:true,
-                message:"Grupo "+message+" correctamente"
+                message:"Grupo eliminado correctamente"
             })
         })
         .catch(err=>{

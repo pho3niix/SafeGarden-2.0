@@ -72,7 +72,7 @@ export function expensesController(url:string, app:Express, io:SocketIO.Server):
 
             if(data.length==1){
                 data.push({
-                    _id:data[0]._id==true?false:true,
+                    _id:!data[0]._id,
                     total:0,
                     items:0,
                     expenses:[]
@@ -82,7 +82,7 @@ export function expensesController(url:string, app:Express, io:SocketIO.Server):
             res.status(200).json({
                 status:true,
                 res:{
-                    total: suma(data.map(i=>{
+                    total: suma(data.filter(e=>e._id==false).map(i=>{
                         return i.total
                     })),
                     expenses:data

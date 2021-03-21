@@ -1,13 +1,13 @@
 const config = {
-    MONGODB_URI:"mongodb://localhost:27017/gardenv2",
-    secret:"S4f364rD3N_96000212",
-    Bcrypt_rounds:8,
+    MONGODB_URI:process.env.MONGODB_URI,
+    secret:process.env.SECRET_KEY,
+    Bcrypt_rounds:process.env.Bcrypt_rounds,
     nodemailer:{
-        user:'safegarden2020@outlook.com',
-        pass:'5af3gard3n2020'
+        user:process.env.mail_user,
+        pass:process.env.mail_password
     },
-    appName:"SafeGarden2.0",
-    port:3000
+    appName:process.env.appName,
+    port:process.env.PORT
 }
 
 export default config;

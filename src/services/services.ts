@@ -50,8 +50,8 @@ export function sendEmail(from: string, to: string, subject: string, message: st
         port: 587,
         secure: false,
         auth: {
-            user: process.env.mail_user,
-            pass: process.env.mail_password
+            user: config.nodemailer.user,
+            pass: config.nodemailer.pass
         },
         requireTLS: true,
         tls: {
@@ -69,7 +69,7 @@ export function decodeToken(token: string) {
     return jwt.decode(token);
 }
 
-export function filter(key: string, value: string) {
+export function filter(key: string, value: string):any {
     return key == null || key == undefined ? {} : { [key]: value };
 }
 
@@ -98,7 +98,7 @@ export function createToken(payload: IUsers, expires: number): string {
         id: payload._id,
         email: payload.email,
         name: payload.name
-    }, process.env.SECRET_KEY, options);
+    }, config.secret, options);
 }
 
 export function ltDate(date: string): string {
